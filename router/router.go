@@ -2,6 +2,7 @@ package router
 
 import (
 	"MyGram/controller"
+	"MyGram/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +14,10 @@ func StartApp() *gin.Engine {
 	{
 		userRouter.POST("/login", controller.UserLogin)
 		userRouter.POST("/register", controller.UserRegister)
-		userRouter.PUT("/:user_id")
-		userRouter.DELETE("/:user_id")
+
+		userRouter.Use(middleware.Authentication())
+		userRouter.PUT("/:user_id", middleware.UserAuthorization(), controller.UserEdit)
+		userRouter.DELETE("/:user_id", middleware.UserAuthorization(), controller.UserDelete)
 	}
 
 	photoRouter := r.Group("/photos")
