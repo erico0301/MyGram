@@ -139,6 +139,7 @@ func UserDelete(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("user_id"))
 
 	db.Delete(&User, userID)
+	db.Select("Photo").Delete(&User)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User has been deleted",

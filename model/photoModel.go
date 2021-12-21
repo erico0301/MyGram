@@ -1,6 +1,8 @@
 package model
 
 import (
+	"time"
+
 	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
@@ -13,6 +15,28 @@ type Photo struct {
 	UserID    uint
 	User      *User
 	Comments  []Comment `gorm:"constraint:OnUpdate:CASCADE, OnDelete:SET NULL;" json:"comments"`
+}
+
+type MyPhoto struct {
+	ID        uint              `json:"id"`
+	Title     string            `json:"title"`
+	Caption   string            `json:"caption"`
+	Photo_url string            `json:"photo_url"`
+	CreatedAt *time.Time        `json:"created_at"`
+	Comments  []GetPhotoComment `json:"comments"`
+}
+type PublicPhoto struct {
+	ID        uint       `json:"id"`
+	Title     string     `json:"title"`
+	Caption   string     `json:"caption"`
+	Photo_url string     `json:"photo_url"`
+	CreatedAt *time.Time `json:"created_at"`
+	User      struct {
+		ID       uint   `json:"id"`
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	}
+	Comments []GetPhotoComment `json:"comments"`
 }
 
 func (p *Photo) BeforeCreate(tx *gorm.DB) (err error) {
