@@ -41,10 +41,11 @@ func StartApp() *gin.Engine {
 
 	socialmediaRouter := r.Group("/socialmedias")
 	{
-		socialmediaRouter.POST("/")
-		socialmediaRouter.GET("/")
-		socialmediaRouter.PUT("/:socialmedia_id")
-		socialmediaRouter.DELETE("/:socialmedia_id")
+		commentRouter.Use(middleware.Authentication())
+		socialmediaRouter.POST("/", controller.CreateSocialmedia)
+		socialmediaRouter.GET("/", controller.GetMySocialMedia)
+		socialmediaRouter.PUT("/:socialmedia_id", middleware.SocialMediaAuthorization(), controller.EditSocialMedia)
+		socialmediaRouter.DELETE("/:socialmedia_id", middleware.SocialMediaAuthorization(), controller.DeleteSocialMedia)
 	}
 
 	return r

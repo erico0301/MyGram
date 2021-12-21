@@ -4,7 +4,6 @@ import (
 	"MyGram/database"
 	"MyGram/helper"
 	"MyGram/model"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,8 +29,6 @@ func CreateComment(c *gin.Context) {
 
 	Comment.UserID = userID
 
-	fmt.Println(Comment.UserID)
-	fmt.Println("Photo_ID : ", Comment.PhotoID)
 	err := db.Debug().Create(&Comment).Error
 
 	if err != nil {
@@ -55,16 +52,15 @@ func DeleteComment(c *gin.Context) {
 	db := database.GetDB()
 	Comment := model.Comment{}
 	commentID, _ := strconv.Atoi(c.Param("comment_id"))
-	tempComment := model.Comment{}
-	_ = db.Find(&tempComment, commentID)
-	if tempComment.ID == 0 {
+
+	err := db.Delete(&Comment, commentID).Error
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "Comment not found",
+			"error":   "Bad request",
+			"message": err.Error(),
 		})
+		return
 	}
-
-	db.Delete(&Comment, commentID)
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Comment has been deleted",
 	})
