@@ -3,10 +3,12 @@ package main
 import (
 	"MyGram/database"
 	"MyGram/router"
+	"os"
 )
 
 func main() {
 	database.StartDB()
 	r := router.StartApp()
-	r.Run(":8080")
+	port := os.Getenv("PORT")
+	r.Run(":" + port)
 }
